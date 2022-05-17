@@ -1,16 +1,26 @@
 const mongoose=require('mongoose');
 const TaskSchema= new mongoose.Schema({
-    title:{
+
+    label:{
         type : String,
         minlenght:1,
         trim:true
     },
-    listId :mongoose.Types.ObjectId,
-    label :String,
-    description :String,
-    type:String,
-    dueDate :Date
+    description:{
+        type : String,
+        minlenght:3,
+        trim:true
+    },
+    type: String,
+    dueDate: Date,
+    _dayId:{
+        type: mongoose.Types.ObjectId
+    }
     
 })
-const Task = mongoose.model('Task', TaskSchema);
+
+
+
+
+const Task = mongoose.model("Task", TaskSchema);
 module.exports={Task}
