@@ -4,6 +4,14 @@ const {mongoose}=require('./db/mongoose')
 const bodyParser=require('body-parser');
 /*  load midleware for using json forma  */
 app.use(bodyParser.json());
+// 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
+
 /* load the mongoose models */
 const {Day, Task} =require('./db/models');
 
@@ -24,11 +32,10 @@ app.get('/days', (req, res)=> {
 
 app.post('/days', (req, res)=> {
     // create new days for add tasks ,and retuen new day to user with the id
-    let label=req.body.label;
-    let description=req.body.description;
+    let title=req.body.title;
+
     let newDay=new Day({
-        label,
-        description
+        title
     });
     newDay.save().then((dayDoc)=>{
         // returned day document (inc,id)

@@ -8,8 +8,8 @@ const DaySchema= new mongoose.Schema({
         type: String,
         required: true,
         trim:true
-    },
-    date: { type: Date, default: Date.now }
+    }
+    // date: { type: Date }
 })
 const Day = mongoose.model("Day", DaySchema);
 module.exports={Day}
