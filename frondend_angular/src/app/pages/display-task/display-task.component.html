@@ -1,0 +1,32 @@
+<div class="centred-content">
+    <div class="task-manager-container">
+        <div class="sidebar"> 
+            <h1 class="title has-text-primary">
+                Days
+            </h1>
+            <!--list days elements-->
+            <div class="list-menu">
+
+
+                <a class="list-menu-item " *ngFor="let day of days" [routerLink]="['/days' , day._id]" routerLinkActive="is-active" >
+                    <p>
+                       {{day.title}}
+                    </p>
+                </a>
+            </div>
+            <button class="button is-primary has-text-white" routerLink="/new-day">+ New Day</button>
+        </div >
+        <div class="task-list-container">
+            <h1 class="title has-text-primary">
+                tasks
+            </h1>
+             <!--list tasks element for one day -->
+            <div class="task" *ngFor="let task of tasks ">
+                <p>{{task.label}}</p>
+            </div>
+            <button class="circle-add-btn button has-text-white" routerLink="/new-task">Add Task</button>
+        </div>
+    </div>
+
+
+</div>
