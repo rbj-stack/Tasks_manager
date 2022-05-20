@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NewDayComponent } from './pages/new-day/new-day.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
     DisplayTaskComponent,
     NewDayComponent,
     NewTaskComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

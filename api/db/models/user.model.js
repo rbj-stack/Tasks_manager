@@ -40,12 +40,14 @@ UserSchema.methods.toJSON= function(){
     const userObject=user.toObject();
     return _.omit(userObject,['password','sessions']);
 
-    //return document except the password and sessions (there shouldn't be made available )
+    //return document except the password and session
 }
+
+
 UserSchema.methods.generateAccessAuthToken=function(){
     const user=this;
     return new Promise((resolve,reject)=>{
-        //create the json web token and retuen that
+        //create the json web token 
         jwt.sign({_id:user._id.toHexString()},jwtSecret,{expiresIn:"15m"},(err, token)=>{
             if(!err){
                 resolve(token);
@@ -55,6 +57,9 @@ UserSchema.methods.generateAccessAuthToken=function(){
         })
     })
 }
+
+
+
 
 UserSchema.methods.generateRefreshAuthToken=function(){
     return new Promise((resolve,reject)=>{
@@ -74,28 +79,30 @@ UserSchema.methods.createSession=function(){
     }).then((refreshToken)=>{
         return refreshToken;
     }).catch((e)=>{
-        return Promise.reject('Failed to save session to database. \n'+e)
+        return Promise.reject('the session not storred in data . \n'+e)
     })
 }
+
+
+
 /********* model methods (static methods) ***********/
 
 
-// UserSchema.statics.getJWTSecret = () => {
-//     return jwtSecret;
-// }
+UserSchema.statics.getJWTSecret = () => {
+    return jwtSecret;
+}
 /***************************************************/
 UserSchema.statics.findByIdAndToken = function (_id, token) {
     // finds user by id and token
     // used in auth middleware (verifySession)
 
-    const User = this;
+    const user = this;
 
-    return User.findOne({
+    return user.findOne({
         _id,
         'sessions.token': token
     });
 }
-
 
 
 

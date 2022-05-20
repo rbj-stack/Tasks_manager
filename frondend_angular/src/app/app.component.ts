@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'frondend_angular';
+
+  SendDataonChange(event: any) {
+    console.log(event.target.value);
+    }
 }

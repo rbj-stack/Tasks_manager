@@ -20,7 +20,12 @@
 //     }
 // }
 
-export interface Day {
-    _id: string;
+export class Day {
+     _id: string;
     title: string;
+    constructor() {
+     this._id="";
+     this.title="";
+    }
+
 }

@@ -16,15 +16,7 @@ export class NewDayComponent implements OnInit {
  
   ngOnInit(){
   }
-  createDay(title:String){
-    this.taskService.createDay(title).subscribe((day :any)=>{
- 
 
-    console.log(day)
-    //and we we navigate to /days/idDay
-    this.router.navigate(['/days',day._id])
-    });
-  }
   
   createNewDay(title: string) {
     this.taskService.createDay(title).subscribe((day: any) => {

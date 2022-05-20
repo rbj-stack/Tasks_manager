@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
 import { WebrequestService } from './webrequest.service';
+import { Observable } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
 
   constructor(private webreqservice:WebrequestService) { }
+
+
+
+
+
+
+
 
   createDay(title:String){
 
@@ -19,6 +28,7 @@ export class TaskService {
     return this.webreqservice.get(`days/${dayId}/tasks`);
     
   }
+ 
   createTasks(label:String,decsription:string,dueDate:string,type:string,dayId:string){
 
     // send web request to create new task
@@ -29,7 +39,11 @@ export class TaskService {
    complete(task:any){
     
      return this.webreqservice.patch(`days/${task._dayId}/tasks/${task._id}`,{
-       complete:true
+       completed:!task.completed
      });
+   }
+
+   isTasksNotAvailable(task:Task){
+    return Array.isArray(task) && task.length <0
    }
 }

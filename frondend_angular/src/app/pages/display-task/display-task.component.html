@@ -1,14 +1,14 @@
 <div class="centred-content">
     <div class="task-manager-container">
         <div class="sidebar"> 
-            <h1 class="title has-text-primary">
+            <h1 class="title has-text-primary ">
                 focus on
             </h1>
             <!--list days elements-->
             <div class="list-menu">
 
 
-                <a class="list-menu-item " *ngFor="let day of days" [routerLink]="['/days' , day._id]" routerLinkActive="is-active" >
+                <a class="list-menu-item " *ngFor="let day of days" [routerLink]="['/days',day._id]" routerLinkActive="is-active" >
                     <p>
                        {{day.title}}
                     </p>
@@ -16,15 +16,23 @@
             </div>
             <button class="button is-primary has-text-white" routerLink="/new-day">+ New Day</button>
         </div >
-        <div class="task-list-container">
-            <h1 class="title has-text-grey">
-                tasks to do
-            </h1>
-             <!--list tasks element for one day -->
-            <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)">
-                <p>{{task.label}}</p>
+        <div class="task-list-container has-background-light">
+
+            <div *ngIf="tasks">
+                <h1 class="title has-text-grey">
+                    My tasks
+                </h1>
+                <!--list tasks element for one day -->
+                <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)" [ngClass]="{'completed':task.completed}">
+                    <p>{{task.label}}</p>
+                </div>
+                <!-- <h3 class=" empty-tasks is-4 has-text-grey" *ngIf="isTasksNotAvailable(tasks)">You have No tasks , Click On  New task to add tasks!</h3> -->
+
+                <button class="circle-add-btn button has-text-white" routerLink="./new-task">New Task</button>
             </div>
-            <button class="circle-add-btn button has-text-white" routerLink="./new-task">New Task</button>
+            <div *ngIf="!tasks">
+                <h3 class=" empty-tasks is-4 has-text-grey">Please select SomeDay from your list ^_^</h3>
+            </div>
         </div>
     </div>
 

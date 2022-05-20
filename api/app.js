@@ -8,54 +8,85 @@ const bodyParser=require('body-parser');
 /*  load midleware for using json forma  */
 app.use(bodyParser.json());
 // 
+const jwt = require('jsonwebtoken');
+
+const { Day, Task, User} =require('./db/models');
+
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token, x-refresh-token, _id");
+
+    res.header(
+        'Access-Control-Expose-Headers',
+        'x-access-token, x-refresh-token'
+    );
+
     next();
 });
 
 
-//verify refresh token 
-// app.use((req,res,next)=>{
-//     let refreshToken=req.header('x-refresh-token');
-//     let _id=req.header('_id');
 
-//     User.findByIdAndToken(_id,token).then((user)=>{
-//         if(!user){
-//             return Promise.reject({
-//                 "error":"user not found , make sure that the refresh token and user id  are correct"
-//             });
-//         }
-//         // if the reaches here - the user was found 
-//         //theerefor the refresh token exists in the database , but we still have to check expired or not
 
-//         req.user_id=user._id;
-//         req.refreshToken=refreshToken;
-//         let isSessionValid=false;
-//         user.sessions.forEach((session)=>{
-//             if(session.token===refreshToken){
-//                 if(user.hasRefreshTokenExpired(session.expiresAt)===false){
-//                     //refresh token has not expired
-//                     isSessionValid=true;
-//                 }
-//             }
-//         });
-//         if(isSessionValid){
-//             //the session valid call next() to coninue process
-//             next();
-//         }else{
-//             // session not valid
-//             return Promise.reject({
-//                 "error":"Refresh token has expired or the session invalid"
-//             })
-//         }
-//     })
-// })
+
+
+
+// verify refresh token 
+let verifySession = (req, res, next) => {
+    // grab the refresh token from the request header
+    let refreshToken = req.header('x-refresh-token');
+
+    // grab the _id from the request header
+    let _id = req.header('_id');
+
+    User.findByIdAndToken(_id, refreshToken).then((user) => {
+        if (!user) {
+            // user couldn't be found
+            return Promise.reject({
+                'error': 'User not found. Make sure that the refresh token and user id are correct'
+            });
+        }
+
+
+        // if the code reaches here - the user was found
+        // therefore the refresh token exists in the database - but we still have to check if it has expired or not
+
+        req.user_id = user._id;
+        req.userObject = user;
+        req.refreshToken = refreshToken;
+
+        let isSessionValid = false;
+
+        user.sessions.forEach((session) => {
+            if (session.token === refreshToken) {
+                // check if the session has expired
+                if (User.hasRefreshTokenExpired(session.expiresAt) === false) {
+                    // refresh token has not expired
+                    isSessionValid = true;
+                }
+            }
+        });
+
+        if (isSessionValid) {
+            // the session is VALID - call next() to continue with processing this web request
+            next();
+        } else {
+            // the session is not valid
+            return Promise.reject({
+                'error': 'Refresh token has expired or the session is invalid'
+            })
+        }
+
+    }).catch((e) => {
+        res.status(401).send(e);
+    })
+}
+
 /** end middleware   */
 
 /* load the mongoose models */
-const {Day, Task, User} =require('./db/models');
+
 
 
 /* Get   
@@ -216,31 +247,45 @@ app.patch('/days/:dayId/tasks/:taskId', (req, res)=> {
 /**post /users
  * purpose: sign in
  */
-app.post('/users/login',(req,res)=>{
-    //user login
-    let email =req.body.email;
-    let password=req.body.password;
-    User.findByCredentials(email,password).then((user)=>{
-        return user.createSession().then((refreshToken)=>{
-            //session created successfully -refreshtoken returned
-            //now ze generate an auth token for the user
-            return user.generateAccessAuthToken().then((accessToken)=>{
-                return {accessToken,refreshToken}
-            });
-        }).then((authTokens)=>{
-            res
-                .header('x-refresh-token',authTokens.refreshToken)
-                .header('x-access-token',authTokens.accessToken)
-                .send(user);
+ app.post('/users/login', (req, res) => {
+    let email = req.body.email;
+    let password = req.body.password;
 
+    User.findByCredentials(email, password).then((user) => {
+        return user.createSession().then((refreshToken) => {
+            console.log('helloo');
+            // Session created successfully - refreshToken returned.
+            // now we geneate an access auth token for the user
+
+            return user.generateAccessAuthToken().then((accessToken) => {
+                // access auth token generated successfully, now we return an object containing the auth tokens
+                return { accessToken, refreshToken }
+            });
+        }).then((authTokens) => {
+            // Now we construct and send the response to the user with their auth tokens in the header and the user object in the body
+            res
+                .header('x-refresh-token', authTokens.refreshToken)
+                .header('x-access-token', authTokens.accessToken)
+                .send(user);
+ 
         })
-    }).catch((e)=>{
+    }).catch((e) => {
         res.status(400).send(e);
     });
 })
 
-
-
+/**
+ * GET /users/me/access-token
+ * Purpose: generates and returns an access token
+ */
+ app.get('/users/me/access-token', verifySession, (req, res) => {
+    // we know that the user/caller is authenticated and we have the user_id and user object available to us
+    req.userObject.generateAccessAuthToken().then((accessToken) => {
+        res.header('x-access-token', accessToken).send({ accessToken });
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+})
 
 app.listen(3000,() =>{
     console.log("the server is listening on port 3000");
