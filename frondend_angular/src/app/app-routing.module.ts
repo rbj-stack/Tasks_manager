@@ -11,7 +11,7 @@ import { NewTaskComponent } from './pages/new-task/new-task.component';
 const routes: Routes = [
   { path:'' , redirectTo:'days' ,pathMatch:"full"} ,
   { path: 'new-day' , component: NewDayComponent},
-  { path: 'new-task' , component: NewTaskComponent},
+  { path: 'days/:dayId/new-task' , component: NewTaskComponent},
   {path: 'days' , component:DisplayTaskComponent},
   {path: 'days/:dayId' , component:DisplayTaskComponent},
   { path: 'login' , component:LoginPageComponent}

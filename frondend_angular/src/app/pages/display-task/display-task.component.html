@@ -21,10 +21,10 @@
                 tasks to do
             </h1>
              <!--list tasks element for one day -->
-            <div class="task" *ngFor="let task of tasks ">
+            <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)">
                 <p>{{task.label}}</p>
             </div>
-            <button class="circle-add-btn button has-text-white" routerLink="/new-task">Add Task</button>
+            <button class="circle-add-btn button has-text-white" routerLink="./new-task">New Task</button>
         </div>
     </div>
 

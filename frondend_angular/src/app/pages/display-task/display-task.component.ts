@@ -19,8 +19,6 @@ export class DisplayTaskComponent implements OnInit {
         this.taskService.getTasks(params.dayId).subscribe((tasks:any) => {
             this.tasks=tasks;
             console.log(tasks);       // Check the tasks if it's actually an array response 
-
-
         })
       })
     this.taskService.getDays().subscribe((days:any) => {
@@ -30,4 +28,12 @@ export class DisplayTaskComponent implements OnInit {
   }
 
 
+
+
+  onTaskClick(task:Task){
+    //set task as completed
+    this.taskService.complete(task).subscribe(()=>{
+      console.log('completed successfully !');
+    })
+   }
 }

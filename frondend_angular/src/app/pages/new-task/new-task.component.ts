@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Task } from 'src/app/models/task.model';
+import { TaskService } from 'src/app/task.service';
+import { WebrequestService } from 'src/app/webrequest.service';
 
 @Component({
   selector: 'app-new-task',
@@ -6,12 +10,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./new-task.component.scss']
 })
 export class NewTaskComponent implements OnInit {
+  constructor(private taskService: TaskService, private route: ActivatedRoute, private router:Router) { }
 
-  constructor() { }
-
-  ngOnInit(): void {
+  dayId: any;
+  
+  ngOnInit() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.dayId = params['dayId'],{relativeTo:this.route.url};
+        // console.log(this.dayId);
+      }
+    )
   }
-  createTask(label:string,description:string,dueDate:Date,type:string){
+  createTask(label:string,description:string,dueDate:string,type:string){
+    this.taskService.createTasks(label,description,dueDate,type,this.dayId).subscribe((newTask :any)=>{
+    this.router.navigate(['../']);
 
+    })
   }
+
 }

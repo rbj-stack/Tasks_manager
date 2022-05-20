@@ -11,10 +11,15 @@ const TaskSchema= new mongoose.Schema({
         minlenght:3,
         trim:true
     },
+
+    dueDate: String,
     type: String,
-    dueDate: Date,
     _dayId:{
         type: mongoose.Types.ObjectId
+    },
+    completed :{
+        type:Boolean,
+        default:false
     }
     
 })

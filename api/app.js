@@ -8,11 +8,12 @@ const bodyParser=require('body-parser');
 /*  load midleware for using json forma  */
 app.use(bodyParser.json());
 // 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
+});
 
 
 //verify refresh token 
@@ -162,7 +163,7 @@ app.patch('/days/:dayId/tasks/:taskId', (req, res)=> {
     Task.findByIdAndUpdate({_id:req.params.taskId,_dayId:req.params.dayId},{
         $set:req.body
     }).then(()=>{
-        res.sendStatus(200);
+        res.send({message:'updated successfully !!'});
     })
 });
 
