@@ -11,13 +11,15 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NewDayComponent } from './pages/new-day/new-day.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DisplayTaskComponent,
     NewDayComponent,
-    NewTaskComponent
+    NewTaskComponent,
+    LoginPageComponent
   ],
   imports: [
     BrowserModule,

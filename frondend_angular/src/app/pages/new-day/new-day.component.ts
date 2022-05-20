@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from 'src/app/task.service';
-// import { Day} from 'src/app/models/day.model';
+import { Day} from 'src/app/models/day.model';
+
 
 @Component({
   selector: 'app-new-day',
@@ -10,16 +11,26 @@ import { TaskService } from 'src/app/task.service';
 })
 export class NewDayComponent implements OnInit {
   //declarate a list days
-  days : any;
-  constructor(private taskService:TaskService,private router:Router) { }
 
-  ngOnInit(): void {
+  constructor(private taskService:TaskService,private router:Router) { }
+ 
+  ngOnInit(){
   }
-  createNewDay(title:String){
-    this.taskService.createDay(title).subscribe((response: any)=>{
-    console.log(response)
-    //and we we navigate to /days/idDay
-    this.router.navigate(['/days',response._id])
+  // createNewDay(title:String){
+  //   this.taskService.createDay(title).subscribe(()=>{
+  //       day = day;
+
+  //   console.log(day)
+  //   //and we we navigate to /days/idDay
+  //   this.router.navigate(['/days',day._id])
+  //   });
+  // }
+  
+  createNewDay(title: string) {
+    this.taskService.createDay(title).subscribe((day: any) => {
+      console.log(day);
+      // Now we navigate to /lists/task._id
+      this.router.navigate([ '/days', day._id ]); 
     });
   }
 

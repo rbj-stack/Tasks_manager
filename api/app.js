@@ -2,6 +2,9 @@ const express =require('express');
 const app=express();
 const {mongoose}=require('./db/mongoose')
 const bodyParser=require('body-parser');
+
+
+/**middleware   */
 /*  load midleware for using json forma  */
 app.use(bodyParser.json());
 // 
@@ -12,8 +15,46 @@ app.use(function(req, res, next) {
   });
 
 
+//verify refresh token 
+// app.use((req,res,next)=>{
+//     let refreshToken=req.header('x-refresh-token');
+//     let _id=req.header('_id');
+
+//     User.findByIdAndToken(_id,token).then((user)=>{
+//         if(!user){
+//             return Promise.reject({
+//                 "error":"user not found , make sure that the refresh token and user id  are correct"
+//             });
+//         }
+//         // if the reaches here - the user was found 
+//         //theerefor the refresh token exists in the database , but we still have to check expired or not
+
+//         req.user_id=user._id;
+//         req.refreshToken=refreshToken;
+//         let isSessionValid=false;
+//         user.sessions.forEach((session)=>{
+//             if(session.token===refreshToken){
+//                 if(user.hasRefreshTokenExpired(session.expiresAt)===false){
+//                     //refresh token has not expired
+//                     isSessionValid=true;
+//                 }
+//             }
+//         });
+//         if(isSessionValid){
+//             //the session valid call next() to coninue process
+//             next();
+//         }else{
+//             // session not valid
+//             return Promise.reject({
+//                 "error":"Refresh token has expired or the session invalid"
+//             })
+//         }
+//     })
+// })
+/** end middleware   */
+
 /* load the mongoose models */
-const {Day, Task} =require('./db/models');
+const {Day, Task, User} =require('./db/models');
 
 
 /* Get   
@@ -136,6 +177,68 @@ app.patch('/days/:dayId/tasks/:taskId', (req, res)=> {
         res.send(removetaskDoc);
     })
 });
+
+
+
+
+
+/************** user routes ****** */
+
+/**post /users
+ * purpose: sign up
+ */
+ app.post('/users',(req,res)=>{
+    //user register
+    let body =req.body;
+    let newUser=new User(body);
+    newUser.save().then(()=>{
+        return newUser.createSession();
+    }).then((refreshToken)=>{
+            
+        //session created successfully  = refreshToken returned
+        // we generate an access auth token for user
+
+        return newUser.generateAccessAuthToken().then((accessToken)=>{
+            return {accessToken,refreshToken}
+        });
+    }).then((authTokens)=>{
+        res
+            .header('x-refresh-token',authTokens.refreshToken)
+            .header('x-access-token',authTokens.accessToken)
+            .send(newUser);
+    }).catch((e)=>{
+        res.status(400).send(e);
+    })
+})
+
+
+/**post /users
+ * purpose: sign in
+ */
+app.post('/users/login',(req,res)=>{
+    //user login
+    let email =req.body.email;
+    let password=req.body.password;
+    User.findByCredentials(email,password).then((user)=>{
+        return user.createSession().then((refreshToken)=>{
+            //session created successfully -refreshtoken returned
+            //now ze generate an auth token for the user
+            return user.generateAccessAuthToken().then((accessToken)=>{
+                return {accessToken,refreshToken}
+            });
+        }).then((authTokens)=>{
+            res
+                .header('x-refresh-token',authTokens.refreshToken)
+                .header('x-access-token',authTokens.accessToken)
+                .send(user);
+
+        })
+    }).catch((e)=>{
+        res.status(400).send(e);
+    });
+})
+
+
 
 
 app.listen(3000,() =>{
