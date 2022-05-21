@@ -1,31 +1,10 @@
 
-// export class Day {
 
-//     public _id : string;
-//     public title : string;
-
-
-//     constructor(_id : string, title : string){
-//         this._id = _id;
-//         this.title = title;
-//     } 
-
-// }
-
-// export class  Day {
-//     public _id: any;
-//     public title : any;
-//     constructor() {
-    
-//     }
-// }
-
-export class Day {
-     _id: string;
-    title: string;
-    constructor() {
-     this._id="";
-     this.title="";
+export class  Day {
+     _id: String;
+     title : String;
+    constructor( _id: String,title : String) {
+        this._id=_id;
+        this.title=title;
     }
-
 }

@@ -24,7 +24,7 @@ readonly ROOT_URL;
 
 
 
-  register(email: string, password: string) {
+  register(email: String, password: String) {
     return this.http.post(`${this.ROOT_URL}/users`, {
       email,
       password

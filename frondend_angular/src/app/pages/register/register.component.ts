@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
   }
 
-  // onSignupButtonClicked(email: string, password: string) {
+  // onSignupButtonClicked(email: String, password: String) {
   //   this.authService.register(email, password).subscribe((res: HttpResponse<any>) => {
   //     console.log(res);
   //     // this.router.navigate(['/lists']);

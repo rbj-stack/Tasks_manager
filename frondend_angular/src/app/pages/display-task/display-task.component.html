@@ -18,7 +18,7 @@
         </div >
         <div class="task-list-container has-background-light">
 
-            <div *ngIf="tasks">
+            <!-- <div *ngIf="tasks"> -->
                 <h1 class="title has-text-grey">
                     My tasks
                 </h1>
@@ -29,10 +29,10 @@
                 <!-- <h3 class=" empty-tasks is-4 has-text-grey" *ngIf="isTasksNotAvailable(tasks)">You have No tasks , Click On  New task to add tasks!</h3> -->
 
                 <button class="circle-add-btn button has-text-white" routerLink="./new-task">New Task</button>
-            </div>
-            <div *ngIf="!tasks">
+            <!-- </div>
+            <div *ngIf="!tasks"> -->
                 <h3 class=" empty-tasks is-4 has-text-grey">Please select SomeDay from your list ^_^</h3>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 

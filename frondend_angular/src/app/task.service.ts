@@ -24,12 +24,13 @@ export class TaskService {
   getDays(){
     return this.webreqservice.get('days');
   }
-  getTasks(dayId:string){
+  getTasks(dayId:String){
     return this.webreqservice.get(`days/${dayId}/tasks`);
     
   }
+
  
-  createTasks(label:String,decsription:string,dueDate:string,type:string,dayId:string){
+  createTasks(label:String,decsription:String,dueDate:String,type:String,dayId:String){
 
     // send web request to create new task
     return this.webreqservice.post(`days/${dayId}/tasks`,{label,decsription,dueDate,type,dayId});
@@ -43,7 +44,4 @@ export class TaskService {
      });
    }
 
-   isTasksNotAvailable(task:Task){
-    return Array.isArray(task) && task.length <0
-   }
 }

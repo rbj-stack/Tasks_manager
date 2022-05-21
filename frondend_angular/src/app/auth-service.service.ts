@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { WebrequestService } from './webrequest.service';
 import { Router } from '@angular/router';
-
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class AuthServiceService {
 
   constructor() { }
 
-  // register(email: string, password: string) {
+
+  // register(email: String, password: String) {
   //   return this.webService.
   //   .register(email, password).pipe(
   //     shareReplay(),

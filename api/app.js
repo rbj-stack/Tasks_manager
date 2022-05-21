@@ -145,7 +145,7 @@ app.delete('/days/:id', (req, res)=> {
 
 app.get('/days/:dayId/tasks', (req, res)=> {
     //get tsks bellong to day by id
-    Task.find({dayId:req.params.dayId}).then((tasks)=>{
+    Task.find({_dayId:req.params.dayId}).then((tasks)=>{
             res.send(tasks);
         });
 });

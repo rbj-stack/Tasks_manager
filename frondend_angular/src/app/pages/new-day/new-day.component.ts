@@ -18,7 +18,7 @@ export class NewDayComponent implements OnInit {
   }
 
   
-  createNewDay(title: string) {
+  createNewDay(title: String) {
     this.taskService.createDay(title).subscribe((day: any) => {
       console.log(day);
       // Now we navigate to /lists/task._id

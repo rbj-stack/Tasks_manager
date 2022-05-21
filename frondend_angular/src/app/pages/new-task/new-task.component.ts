@@ -22,9 +22,9 @@ export class NewTaskComponent implements OnInit {
       }
     )
   }
-  dDate =new Date().toString();
-  createTask(label:string,description:string,dDate:string,type:string){
-    this.taskService.createTasks(label,description,dDate,type,this.dayId).subscribe((newTask :any)=>{
+  // dDate =new Date().toString();
+  createTask(label:String,description:String,Date:String,type:String){
+    this.taskService.createTasks(label,description,Date,type,this.dayId).subscribe((newTask :any)=>{
     this.router.navigate(['../']);
     console.log(this.dayId);
 
