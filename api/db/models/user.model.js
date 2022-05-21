@@ -72,14 +72,27 @@ UserSchema.methods.generateRefreshAuthToken=function(){
     })
 }
 
-UserSchema.methods.createSession=function(){
-    let  user=this;
-    return user.generateRefreshAuthToken().then((refreshToken)=>{
-        return saveSessionToDatabase(user,refreshToken);
-    }).then((refreshToken)=>{
+// UserSchema.methods.createSession=function(){
+//     let  user=this;
+//     return user.generateRefreshAuthToken().then((refreshToken)=>{
+//         return saveSessionToDatabase(user,refreshToken);
+//     }).then((refreshToken)=>{
+//         return refreshToken;
+//     }).catch((e)=>{
+//         return Promise.reject('the session not storred in data . \n'+e)
+//     })
+// }
+UserSchema.methods.createSession = function () {
+    let user = this;
+
+    return user.generateRefreshAuthToken().then((refreshToken) => {
+        return saveSessionToDatabase(user, refreshToken);
+    }).then((refreshToken) => {
+        // saved to database successfully
+        // now return the refresh token
         return refreshToken;
-    }).catch((e)=>{
-        return Promise.reject('the session not storred in data . \n'+e)
+    }).catch((e) => {
+        return Promise.reject('Failed to save session to database.\n' + e);
     })
 }
 
@@ -102,6 +115,10 @@ UserSchema.statics.findByIdAndToken = function (_id, token) {
         _id,
         'sessions.token': token
     });
+}
+
+UserSchema.statics.getJWTSecret = () => {
+    return jwtSecret;
 }
 
 

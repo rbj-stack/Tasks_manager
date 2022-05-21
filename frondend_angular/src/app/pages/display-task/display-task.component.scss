@@ -29,7 +29,14 @@
     padding: 40px;
     border-top-left-radius:0px ;
     border-bottom-left-radius:8px ;
-
+    .top-bar {
+        margin-bottom: 20px;
+        display: flex;
+        .title {
+            flex-grow: 1;
+            margin: 0;
+        }
+    }
 }
 
 .title{
@@ -63,10 +70,14 @@
     }
 }
 .task {
+    display: flex;
     background: white;
     padding: 10px 20px;
     border-radius: 5px;
     margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    
     &:not(.completed){
         cursor: pointer;
         transition: box-shadow 0.2s ease ,transform 0.2s ease;
@@ -75,11 +86,24 @@
         }
         &:hover {
             box-shadow: 0 0 0 5px #eeee;
+            .task-buttons {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     }
-    &.completed{
-        text-decoration: line-through;   
+    &.completed .task-text {
+        text-decoration: line-through;
         opacity: 0.8;
+    }
+    .task-text {
+        display: flex;
+        flex-grow: 1;
+    }
+    .task-buttons{
+        opacity: 0;
+        transition: opacity 0.2s;
+        transform: scale(0.5);
     }
 
 }

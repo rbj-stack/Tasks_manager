@@ -8,6 +8,10 @@ const DaySchema= new mongoose.Schema({
         type: String,
         required: true,
         trim:true
+    },
+    _userId:{
+        type:String,
+        // required:true
     }
     // date: { type: Date }
 })

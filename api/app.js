@@ -2,15 +2,13 @@ const express =require('express');
 const app=express();
 const {mongoose}=require('./db/mongoose')
 const bodyParser=require('body-parser');
-
+const jwt = require('jsonwebtoken');
+const { Day, Task, User} =require('./db/models');
 
 /**middleware   */
 /*  load midleware for using json forma  */
 app.use(bodyParser.json());
-// 
-const jwt = require('jsonwebtoken');
 
-const { Day, Task, User} =require('./db/models');
 
 
 app.use(function (req, res, next) {
@@ -25,11 +23,19 @@ app.use(function (req, res, next) {
 
     next();
 });
+//chack jwt access token 
 
-
-
-
-
+let authenticate= () => {
+    jwt.verify(token,User.getJWTSecret(),(err,decoded)=>{
+        if(err){
+            // there was an error
+            res.status(401).send(err);
+        }else{
+            req.user_id=jwt.decoded._id;
+            next();
+        }
+    });
+}
 
 
 // verify refresh token 
@@ -44,12 +50,12 @@ let verifySession = (req, res, next) => {
         if (!user) {
             // user couldn't be found
             return Promise.reject({
-                'error': 'User not found. Make sure that the refresh token and user id are correct'
+                'error': 'User not found. please Make sure that user id are correct !!'
             });
         }
 
 
-        // if the code reaches here - the user was found
+     
         // therefore the refresh token exists in the database - but we still have to check if it has expired or not
 
         req.user_id = user._id;
@@ -61,7 +67,7 @@ let verifySession = (req, res, next) => {
         user.sessions.forEach((session) => {
             if (session.token === refreshToken) {
                 // check if the session has expired
-                if (User.hasRefreshTokenExpired(session.expiresAt) === false) {
+                if (User.hasRefreshTokenExpired(session.expireAt) === false) {
                     // refresh token has not expired
                     isSessionValid = true;
                 }
@@ -69,12 +75,12 @@ let verifySession = (req, res, next) => {
         });
 
         if (isSessionValid) {
-            // the session is VALID - call next() to continue with processing this web request
+            // so the session is  valid - call next() to continue with processing 
             next();
         } else {
-            // the session is not valid
+            // is not valid
             return Promise.reject({
-                'error': 'Refresh token has expired or the session is invalid'
+                'error': 'Refresh token has expired!'
             })
         }
 
@@ -82,6 +88,14 @@ let verifySession = (req, res, next) => {
         res.status(401).send(e);
     })
 }
+
+/** end  middleware   */
+
+
+
+
+
+
 
 /** end middleware   */
 
@@ -92,10 +106,23 @@ let verifySession = (req, res, next) => {
 /* Get   
    for get list of all days
 */
+
+
+// when works logiin uncomment this
+// app.get('/days', authenticate,(req, res)=> {
+//     Day.find({_userId:req.user_id}).then((days)=>{
+//         res.send(days);
+//     }).catch((e)=>{
+//         res.send(e);
+//     });
+// })
+
 app.get('/days', (req, res)=> {
     // get the array days from database
     Day.find({}).then((days)=>{
         res.send(days);
+    }).catch((e)=>{
+        res.send(e);
     });
 })
 
@@ -124,7 +151,7 @@ app.patch('/days/:id', (req, res)=> {
     // update the days , use id to specify day
     Day.findOneAndUpdate({_id:req.params.id},{
         $set: req.body}).then(()=>{
-            res.sendStatus(200);
+            res.send({'message':'Day updated successfully!'});
         });
 })
 
@@ -134,9 +161,19 @@ app.patch('/days/:id', (req, res)=> {
 
 app.delete('/days/:id', (req, res)=> {
     // delete the days , use id to specify day
-    Day.findByIdAndRemove({_id:req.params.id}).then((removeDayDoc)=>{
+    Day.findOneAndRemove({
+        _id:req.params.id
+    }).then((removeDayDoc)=>{
             res.send(removeDayDoc);
-        });
+    });
+
+    //delete  all tasks belong to this day
+    // console.log(removeDayDoc._dayId);
+    // deleteTasksFromDay(removeDayDoc.);
+  
+
+        // delete all the tasks that are in the deleted list
+
 })
 
 
@@ -279,13 +316,35 @@ app.patch('/days/:dayId/tasks/:taskId', (req, res)=> {
  * Purpose: generates and returns an access token
  */
  app.get('/users/me/access-token', verifySession, (req, res) => {
-    // we know that the user/caller is authenticated and we have the user_id and user object available to us
+    // we know that the user is authenticated
     req.userObject.generateAccessAuthToken().then((accessToken) => {
         res.header('x-access-token', accessToken).send({ accessToken });
     }).catch((e) => {
         res.status(400).send(e);
     });
 })
+
+
+
+
+
+
+
+
+
+let deleteTasksFromDay=(_dayId)=>{
+    Task.deleteMany({
+        _dayId
+    }).then(()=>{
+        console.log("tasks deleted from"+_dayId+"defenitly!")
+    })
+}
+
+
+
+
+
+
 
 app.listen(3000,() =>{
     console.log("the server is listening on port 3000");

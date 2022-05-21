@@ -1,0 +1,31 @@
+<div class="centred-content">
+    <div class="model-box">
+
+          <h1 class="title has-text-grey">
+              Update Task
+          </h1>
+   
+            <div class="field ">
+                <div ><input #taskLabelInput class="input has-background-light is-meduim" type="text" placeholder="Add a new task to do"></div><br>
+                <div ><input  #taskDescInput class="input has-background-light is-meduim" type="text" placeholder="Add a description"></div><br>
+                <div ><input #taskDateInput  class="input has-background-light is-meduim" type="text" placeholder="yy-mm-dd" ></div><br>
+                <div >
+                    <select  #taskTypeInput class=" input has-background-light is-meduim" name="type">
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Growth">Growth</option>
+                    </select>
+                </div><br>
+
+
+                
+                <div class="buttons is-right">
+                    <button class="button is-meduim " routerLink="/">Cancel</button>
+                    <button class="button is-primary" (click)="updateTask(taskLabelInput.value,taskDescInput.value,taskDateInput.value,taskTypeInput.value)" >Create</button>
+                </div>
+            </div>
+    
+
+    </div>
+
+</div>

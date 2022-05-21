@@ -1,5 +1,5 @@
 export class Task {
-     _id:String;
+     _id:string;
      label:String;
      description:String;
      type:String;
@@ -9,7 +9,7 @@ export class Task {
 
 
      constructor(  
-          _id:String,
+          _id:string,
           label:String,
           description:String,
           type:String,

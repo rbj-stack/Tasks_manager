@@ -22,17 +22,23 @@ export class DisplayTaskComponent implements OnInit {
    }
 
    days!: Day[];
-   tasks!: Task[] ;
- 
+   tasks!: Task[] | undefined;
+   selectedDayId:string;
    
 ngOnInit() {
         this.route.params.subscribe((params: Params) => {
-          console.log(params);
-          this.taskService.getTasks(params['dayId']).subscribe((tasks: any ) => {
-          this.tasks =tasks;
-          console.log(params.dayId);
-        
-        })
+          if (params.dayId){
+            this.selectedDayId=params.dayId;
+            console.log(params);
+            this.taskService.getTasks(params['dayId']).subscribe((tasks: any ) => {
+            this.tasks =tasks;
+            // console.log(params.dayId);
+          
+            })
+          }else{
+            this.tasks=undefined
+          }
+
       })
 
 
@@ -63,17 +69,17 @@ ngOnInit() {
     })
    }
 
-  //  onDeleteDayClick() {
-  //   this.taskService.deleteList(this.selectedListId).subscribe((res: any) => {
-  //     this.router.navigate(['/lists']);
-  //     console.log(res);
-  //   })
-  // }
+   onDeleteDay() {
+    this.taskService.deleteDay(this.selectedDayId).subscribe((res: any) => {
+      this.router.navigate(['/days']);
+      console.log(res);
+    })
+  }
 
-  // onDeleteTaskClick(id: String) {
-  //   this.taskService.deleteTask(this.selectedListId, id).subscribe((res: any) => {
-  //     this.tasks = this.tasks.filter(val => val._id !== id);
-  //     console.log(res);
-  //   })
-  // }
+  onDeleteTask(id:string) {
+    this.taskService.deleteTask(this.selectedDayId,id).subscribe((res: any) => {
+      this.tasks=this.tasks?.filter(val=>val._id===id);
+    console.log(res);
+    })
+  }
 }

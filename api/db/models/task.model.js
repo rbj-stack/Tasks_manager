@@ -16,7 +16,7 @@ const TaskSchema= new mongoose.Schema({
     dueDate: String,
     type: String,
     _dayId:{
-        type: mongoose.Types.ObjectId
+        type: String
     },
     completed :{
         type:Boolean,

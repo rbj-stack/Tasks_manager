@@ -18,21 +18,64 @@
         </div >
         <div class="task-list-container has-background-light">
 
-            <!-- <div *ngIf="tasks"> -->
-                <h1 class="title has-text-grey">
-                    My tasks
-                </h1>
-                <!--list tasks element for one day -->
-                <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)" [ngClass]="{'completed':task.completed}">
-                    <p>{{task.label}}</p>
+            <div *ngIf="tasks">
+ 
+                <div class="top-bar">
+                    <h1 class="title has-text-grey">
+                        My tasks
+                    </h1>
+                    <div class="dropdown is-hoverable is-right">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+                            
+                            <span class="icon is-small">
+                              <i class="fas fa-cog" aria-hidden="true"></i>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                            <div class="dropdown-content">
+                                <a class="dropdown-item"   [routerLink]="['/edit-day',selectedDayId]"  >
+                                  Edit
+                                </a>
+                                <a href="#" class="dropdown-item has-text-danger"  (click)="onDeleteDay()">
+                                  Delete
+                                </a>
+
+                   
+                              </div>
+                        </div>
+                      </div>
                 </div>
-                <!-- <h3 class=" empty-tasks is-4 has-text-grey" *ngIf="isTasksNotAvailable(tasks)">You have No tasks , Click On  New task to add tasks!</h3> -->
+                
+                <!--list tasks element for one day -->
+                <div class="task  " *ngFor="let task of tasks" (click)="onTaskClick(task)" [ngClass]="{'completed':task.completed}">
+                    <div class="task-text">
+                        <p>{{task.label}}</p>
+
+                    </div>
+                    <div class="task-buttons">
+                        <div class="button is-danger is-small " style="margin-right: 10px;" (click)="onDeleteTask(task._id)">
+                            <div class="icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                        </div>
+                        <div class="button is-small"  [routerLink]="['/days', selectedDayId, 'edit-task', task._id]">
+                            <div class="icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <h3 class=" empty-tasks is-4 has-text-grey" *ngIf="tasks.length===0">You have No tasks , Click On  New task to add tasks!</h3>
 
                 <button class="circle-add-btn button has-text-white" routerLink="./new-task">New Task</button>
-            <!-- </div>
-            <div *ngIf="!tasks"> -->
-                <h3 class=" empty-tasks is-4 has-text-grey">Please select SomeDay from your list ^_^</h3>
-            <!-- </div> -->
+            </div>
+            <div *ngIf="!tasks">
+                <h3 class=" empty-tasks is-4 has-text-grey">Please Create SomeDay To Your list ^_^</h3>
+            </div>
         </div>
     </div>
 
